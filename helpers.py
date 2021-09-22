@@ -25,12 +25,12 @@ def get_random_params(I, N, M, K, L):
         "T4": T4,
         "Q1": Q1,
         "Q2": Q2,
-        "a_ij": a_ij,
-        "b_ij": b_ij,
+        "a_ij": a_ij.tolist(),
+        "b_ij": b_ij.tolist(),
     }
 
 
-def convert_to_solution(x, problem_instance, use_ACO=False):
+def convert_to_solution(x, problem_instance, use_ACO=False, **kwargs):
     I = problem_instance.I
     N = problem_instance.N
     M = problem_instance.M
@@ -45,12 +45,12 @@ def convert_to_solution(x, problem_instance, use_ACO=False):
     supplierAssignment[np.arange(0, I), np.floor(subX * N).astype(int)] = 1
     x_n_ij = np.zeros((N, I+1, I+1))
 
-    if use_ACO and a_ij is not None:
+    if use_ACO:
         for n in range(N):
             tmp = supplierAssignment[:, n]
             nodes = np.concatenate(([0], np.argwhere(tmp > 0).flatten() + 1))
             x_ij = np.zeros((I + 1, I + 1))
-            x_ij[np.ix_(nodes, nodes)], _ = aco(a_ij[np.ix_(nodes, nodes)])
+            x_ij[np.ix_(nodes, nodes)], _ = aco(a_ij[np.ix_(nodes, nodes)], **kwargs)
             x_n_ij[n] = x_ij
     else:
         begin = end
@@ -82,12 +82,12 @@ def convert_to_solution(x, problem_instance, use_ACO=False):
     clientAssignment[np.arange(0, I), np.floor(subX * M).astype(int)] = 1
     y_m_ij = np.zeros((M, I+1, I+1))
 
-    if use_ACO and a_ij is not None:
+    if use_ACO:
         for m in range(M):
             tmp = clientAssignment[:, m]
             nodes = np.concatenate(([0], np.argwhere(tmp > 0).flatten() + 1))
             y_ij = np.zeros((I + 1, I + 1))
-            y_ij[np.ix_(nodes, nodes)], _ = aco(b_ij[np.ix_(nodes, nodes)])
+            y_ij[np.ix_(nodes, nodes)], _ = aco(b_ij[np.ix_(nodes, nodes)], **kwargs)
             y_m_ij[m] = y_ij
     else:
         begin = end

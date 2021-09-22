@@ -17,8 +17,8 @@ class ProblemDefinition(dict):
         self.T4 = params["T4"]
         self.Q1 = params["Q1"]
         self.Q2 = params["Q2"]
-        self.a_ij = params["a_ij"]
-        self.b_ij = params["b_ij"]
+        self.a_ij = np.array(params["a_ij"])
+        self.b_ij = np.array(params["b_ij"])
         self.cost_cache = {}
 
     def cost_function(self, x_n_ij, u_nk, v_ml, y_m_ij):

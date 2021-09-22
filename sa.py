@@ -1,8 +1,9 @@
 import numpy as np
+import time
 from tqdm import tqdm
 
 
-def sa(cost_f, lb, ub, maxiter=10000, step_coeff=0.001, display_progress=False):
+def sa(cost_f, lb, ub, maxiter=10000, step_coeff=0.001, display_progress=False, debug_output=False):
     lb = np.array(lb)
     ub = np.array(ub)
     x = np.random.rand(len(lb))
@@ -10,6 +11,10 @@ def sa(cost_f, lb, ub, maxiter=10000, step_coeff=0.001, display_progress=False):
     cost = cost_f(x)
     best_x = x
     best_cost = cost
+    if debug_output:
+        start = time.time()
+        times = np.zeros(maxiter)
+        costs = np.zeros(maxiter)
     iters = range(maxiter)
     if display_progress:
         iters = tqdm(iters)
@@ -28,5 +33,9 @@ def sa(cost_f, lb, ub, maxiter=10000, step_coeff=0.001, display_progress=False):
             x, cost = new_x, new_cost
             if new_cost < best_cost:
                 best_x, best_cost = new_x, new_cost
-
+        if debug_output:
+            times[iter_num] = time.time() - start
+            costs[iter_num] = best_cost
+    if debug_output:
+        return best_x, best_cost, times, costs
     return best_x, best_cost
